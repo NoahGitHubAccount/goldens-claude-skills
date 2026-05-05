@@ -1,0 +1,35 @@
+﻿<#
+.SYNOPSIS
+  UserPromptSubmit hook — 注入 status.md 摘要到上下文。
+
+.DESCRIPTION
+  使用者送出 prompt 時，把 status.md 的關鍵欄位（進行中任務、下次第一步、Blocker）
+  輸出到 stdout，Claude Code 會把這段附加到 prompt context。
+
+.NOTES
+  複製到 <project>/.claude/hooks/user-prompt-loader.ps1。
+  此 hook 解決跨日協作恢復痛點：每次提問自動讓 Agent 看到當前進度。
+#>
+
+$projectDir = $env:CLAUDE_PROJECT_DIR
+if (-not $projectDir) { exit 0 }
+
+$statusFile = Join-Path $projectDir 'status.md'
+if (-not (Test-Path -LiteralPath $statusFile)) { exit 0 }
+
+$content = Get-Content -LiteralPath $statusFile -Raw -Encoding UTF8
+
+# 擷取關鍵區塊
+$lastUpdate = if ($content -match '## 最後更新：([^\r\n]+)') { $matches[1] } else { '未知' }
+$nextStep = if ($content -match '## 下次啟動第一步\s*\r?\n+([^\r\n#]+)') { $matches[1].Trim() } else { '' }
+$blocker = if ($content -match '## Blocker\s*\r?\n+(- [^\r\n#]+)') { $matches[1].Trim() } else { '' }
+
+# 輸出（會被注入 prompt context）
+Write-Output "## [Auto] 專案狀態摘要"
+Write-Output "- 最後更新：$lastUpdate"
+if ($nextStep) { Write-Output "- 下次第一步：$nextStep" }
+if ($blocker)  { Write-Output "- Blocker：$blocker" }
+Write-Output ""
+Write-Output "（完整狀態見 status.md）"
+
+exit 0

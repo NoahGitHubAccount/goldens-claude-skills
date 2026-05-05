@@ -1,0 +1,51 @@
+﻿<#
+.SYNOPSIS
+  PostToolUse hook — 在 Edit/Write 後依副檔名觸發格式化工具。
+
+.DESCRIPTION
+  Hook 從 stdin 收到 JSON，含 tool_input.file_path。
+  根據副檔名選擇對應 formatter。失敗時警告但不阻擋（exit 1）。
+
+.NOTES
+  複製到 <project>/.claude/hooks/post-edit-format.ps1。
+  formatter 需自行確保已安裝（npm i prettier、pip install black 等）。
+#>
+
+$input | Out-String | Set-Variable -Name raw
+try {
+    $payload = $raw | ConvertFrom-Json
+} catch {
+    exit 0
+}
+
+$filePath = $payload.tool_input.file_path
+if (-not $filePath -or -not (Test-Path -LiteralPath $filePath)) { exit 0 }
+
+$ext = [System.IO.Path]::GetExtension($filePath).ToLower()
+
+switch ($ext) {
+    { $_ -in '.js', '.jsx', '.ts', '.tsx', '.json', '.css', '.html', '.md' } {
+        if (Get-Command npx -ErrorAction SilentlyContinue) {
+            npx --no-install prettier --write $filePath 2>&1 | Out-Null
+            if ($LASTEXITCODE -ne 0) {
+                Write-Warning "[post-edit-format] prettier 執行失敗：$filePath"
+                exit 1
+            }
+        }
+    }
+    '.py' {
+        if (Get-Command black -ErrorAction SilentlyContinue) {
+            black --quiet $filePath 2>&1 | Out-Null
+        }
+    }
+    '.cs' {
+        if (Get-Command dotnet -ErrorAction SilentlyContinue) {
+            dotnet format --include $filePath 2>&1 | Out-Null
+        }
+    }
+    default {
+        # 無對應 formatter，略過
+    }
+}
+
+exit 0

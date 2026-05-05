@@ -1,0 +1,57 @@
+﻿<#
+.SYNOPSIS
+  PostToolUse hook — Bash 失敗時把指令與 stderr 摘要寫入 learnings.md 待整理區。
+
+.DESCRIPTION
+  Hook 從 stdin 收到 JSON，含 tool_input.command 與 tool_response.exit_code/stderr。
+  僅在 exit_code != 0 時觸發，避免噪音。
+
+.NOTES
+  複製到 <project>/.claude/hooks/post-bash-learning.ps1。
+  寫入位置：<project>/learnings.md 的「## 待整理」區塊下方。
+#>
+
+$input | Out-String | Set-Variable -Name raw
+try {
+    $payload = $raw | ConvertFrom-Json
+} catch {
+    exit 0
+}
+
+$exitCode = $payload.tool_response.exit_code
+if (-not $exitCode -or $exitCode -eq 0) { exit 0 }
+
+$projectDir = $env:CLAUDE_PROJECT_DIR
+if (-not $projectDir) { exit 0 }
+
+$learningsFile = Join-Path $projectDir 'learnings.md'
+if (-not (Test-Path -LiteralPath $learningsFile)) { exit 0 }
+
+$cmd = $payload.tool_input.command
+if (-not $cmd) { exit 0 }
+$cmdShort = if ($cmd.Length -gt 200) { $cmd.Substring(0, 200) + '...' } else { $cmd }
+
+$stderr = $payload.tool_response.stderr
+if (-not $stderr) { $stderr = '(無 stderr)' }
+$stderrShort = if ($stderr.Length -gt 300) { $stderr.Substring(0, 300) + '...' } else { $stderr }
+
+$today = Get-Date -Format 'yyyy-MM-dd'
+$entry = @"
+
+- [$today] Bash 失敗（exit $exitCode）
+  - 指令：``$cmdShort``
+  - stderr：$stderrShort
+"@
+
+# 在「## 待整理」標題後追加
+$content = Get-Content -LiteralPath $learningsFile -Raw -Encoding UTF8
+$marker = '## 待整理（Hook 自動寫入區）'
+if ($content -match [regex]::Escape($marker)) {
+    $content = $content -replace [regex]::Escape($marker), "$marker$entry"
+    Set-Content -LiteralPath $learningsFile -Value $content -Encoding UTF8 -NoNewline
+} else {
+    # 找不到 marker 就追加到檔案末尾
+    Add-Content -LiteralPath $learningsFile -Value $entry -Encoding UTF8
+}
+
+exit 0

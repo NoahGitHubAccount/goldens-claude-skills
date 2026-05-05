@@ -1,0 +1,48 @@
+﻿<#
+.SYNOPSIS
+  Stop hook — session 結束時自動更新 status.md 的時間與 git HEAD。
+
+.DESCRIPTION
+  在專案根目錄找 status.md，更新「最後更新」與「Git 狀態」欄位。
+  「下次啟動第一步」與「Blocker」由人手動維護，hook 不動。
+
+.NOTES
+  複製到 <project>/.claude/hooks/stop-status-snapshot.ps1。
+#>
+
+$projectDir = $env:CLAUDE_PROJECT_DIR
+if (-not $projectDir) { exit 0 }
+
+$statusFile = Join-Path $projectDir 'status.md'
+if (-not (Test-Path -LiteralPath $statusFile)) { exit 0 }
+
+$now = Get-Date -Format 'yyyy-MM-dd HH:mm'
+
+# 取得 git 狀態
+$branch = ''
+$head = ''
+try {
+    Push-Location $projectDir
+    $branch = (& git rev-parse --abbrev-ref HEAD 2>$null).Trim()
+    $head = (& git log -1 --pretty=format:'%h %s' 2>$null).Trim()
+} catch {
+    # git 不可用時跳過
+} finally {
+    Pop-Location
+}
+
+$content = Get-Content -LiteralPath $statusFile -Raw -Encoding UTF8
+
+# 更新「最後更新」
+$content = [regex]::Replace($content, '## 最後更新：[^\r\n]*', "## 最後更新：$now")
+
+# 更新「Git 狀態」區塊（branch 與 HEAD 兩行）
+if ($branch) {
+    $content = [regex]::Replace($content, '- branch:[^\r\n]*', "- branch: $branch")
+}
+if ($head) {
+    $content = [regex]::Replace($content, '- HEAD:[^\r\n]*', "- HEAD: $head")
+}
+
+Set-Content -LiteralPath $statusFile -Value $content -Encoding UTF8 -NoNewline
+exit 0

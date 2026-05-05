@@ -1,0 +1,52 @@
+﻿<#
+.SYNOPSIS
+  PreToolUse hook — 阻擋寫入 secrets 檔案與根目錄散落的 .md。
+
+.DESCRIPTION
+  Claude Code 在呼叫 Write/Edit 工具前會執行此 hook。
+  Hook 從 stdin 收到 JSON，含 tool_name 與 tool_input.file_path。
+  違規時 stderr 寫訊息並 exit 2，Agent 會看到並修正。
+
+.NOTES
+  複製到 <project>/.claude/hooks/pre-write-guard.ps1，
+  並在 .claude/settings.local.json 的 hooks 區塊註冊。
+#>
+
+$input | Out-String | Set-Variable -Name raw
+try {
+    $payload = $raw | ConvertFrom-Json
+} catch {
+    exit 0  # 解析失敗就放行，不阻塞
+}
+
+$filePath = $payload.tool_input.file_path
+if (-not $filePath) { exit 0 }
+
+# 黑名單：secrets / 環境檔
+$forbidden = @(
+    '\.env$',
+    '\.env\.',
+    'credentials\.json$',
+    'secrets\.(yml|yaml|json)$',
+    'id_rsa$',
+    '\.pem$'
+)
+
+foreach ($pattern in $forbidden) {
+    if ($filePath -match $pattern) {
+        Write-Error "[pre-write-guard] 拒絕寫入敏感檔案：$filePath。請改用環境變數或加密儲存。"
+        exit 2
+    }
+}
+
+# 阻擋根目錄散落的 .md（除了允許的）
+$allowedRootMd = @('README.md', 'CLAUDE.md', 'plan.md', 'status.md', 'learnings.md', 'CHANGELOG.md', 'LICENSE.md', 'CONTRIBUTING.md', 'learnings.archive.md')
+$leaf = Split-Path -Leaf $filePath
+$parent = Split-Path -Parent $filePath
+$projectDir = $env:CLAUDE_PROJECT_DIR
+if ($projectDir -and ($parent -eq $projectDir) -and ($leaf -match '\.md$') -and ($allowedRootMd -notcontains $leaf)) {
+    Write-Error "[pre-write-guard] 根目錄不應散落 .md：$leaf。請放到 docs/ 或 notes/。"
+    exit 2
+}
+
+exit 0

@@ -1,0 +1,40 @@
+{
+  "_comment": "二元驗證骨架。每個 eval 為 yes/no 問題，搭配 type 與檔案/指令。harness-engineer 不直接執行此檔，由使用者或 CI 自行跑驗證腳本。",
+  "version": "1.0",
+  "project": "{{PROJECT_NAME}}",
+  "evals": [
+    {
+      "id": "readme-has-install",
+      "question": "README.md 是否含安裝/啟動指令章節？",
+      "type": "file-contains",
+      "file": "README.md",
+      "pattern": "(?m)^##\\s*(安裝|快速啟動|Setup|Install)"
+    },
+    {
+      "id": "claude-md-exists",
+      "question": "CLAUDE.md 是否存在？",
+      "type": "file-exists",
+      "file": "CLAUDE.md"
+    },
+    {
+      "id": "status-recently-updated",
+      "question": "status.md 最後修改是否在 7 天內？",
+      "type": "file-mtime-within-days",
+      "file": "status.md",
+      "days": 7
+    },
+    {
+      "id": "no-secrets-in-git",
+      "question": "git 追蹤檔是否未含 .env / credentials.json？",
+      "type": "command-exit-zero",
+      "command": "powershell -NoProfile -Command \"$tracked = git ls-files; if ($tracked -match '(^|/)(\\.env|credentials\\.json|.*\\.pem)$') { exit 1 } else { exit 0 }\""
+    },
+    {
+      "id": "learnings-format-valid",
+      "question": "learnings.md 是否含至少一筆符合 [YYYY-MM-DD] 格式的條目？",
+      "type": "file-contains",
+      "file": "learnings.md",
+      "pattern": "\\[\\d{4}-\\d{2}-\\d{2}\\]"
+    }
+  ]
+}

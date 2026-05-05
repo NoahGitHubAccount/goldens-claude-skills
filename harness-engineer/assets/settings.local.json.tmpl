@@ -1,0 +1,56 @@
+﻿{
+  "_comment": "harness-engineer 提供的 hooks 範本。複製到 <project>/.claude/settings.local.json，並把 .ps1.tmpl 範本複製為 .ps1 到 <project>/.claude/hooks/。腳本含中文時必須以 UTF-8 with BOM 儲存，否則 Windows PowerShell 5.1 會解析錯誤。如環境有 pwsh（PS 7+）可把 powershell 換成 pwsh。",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -File \"${CLAUDE_PROJECT_DIR}\\.claude\\hooks\\pre-write-guard.ps1\""
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -File \"${CLAUDE_PROJECT_DIR}\\.claude\\hooks\\post-edit-format.ps1\""
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -File \"${CLAUDE_PROJECT_DIR}\\.claude\\hooks\\post-bash-learning.ps1\""
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -File \"${CLAUDE_PROJECT_DIR}\\.claude\\hooks\\stop-status-snapshot.ps1\""
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -File \"${CLAUDE_PROJECT_DIR}\\.claude\\hooks\\user-prompt-loader.ps1\""
+          }
+        ]
+      }
+    ]
+  }
+}

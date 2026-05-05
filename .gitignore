@@ -1,0 +1,28 @@
+# OS
+Thumbs.db
+ehthumbs.db
+desktop.ini
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.vs/
+
+# 工作暫存
+tmp/
+.tmp/
+*.tmp
+
+# 個人 memory（不該進共享 repo）
+memory/
+**/memory/
+projects/
+
+# Claude Code 本地設定（個人化，不分享）
+.claude/settings.local.json
