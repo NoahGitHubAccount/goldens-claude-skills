@@ -115,6 +115,35 @@ foreach ($d in $emptyDirs) {
     }
 }
 
+# 寫入 .harness-version 標記裝的 skill 版本（未來 upgrade 模式會讀此檔）
+$manifestPath = Join-Path $skillRoot 'manifest.json'
+$skillVersion = 'unknown'
+if (Test-Path -LiteralPath $manifestPath) {
+    try {
+        $manifest = Get-Content -LiteralPath $manifestPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        if ($manifest.version) { $skillVersion = $manifest.version }
+    } catch {
+        Write-Host "警告：無法解析 manifest.json，version 標記為 unknown" -ForegroundColor Yellow
+    }
+}
+
+$harnessVersionContent = @"
+{
+  "skill": "harness-engineer",
+  "version": "$skillVersion",
+  "installed_at": "$today",
+  "installed_files": [$(($created | ForEach-Object { "`"$_`"" }) -join ', ')]
+}
+"@
+
+$harnessVersionPath = Join-Path $ProjectPath '.harness-version'
+if ($DryRun) {
+    Write-Host "[Dry] 將寫入：.harness-version (version=$skillVersion)"
+} else {
+    [System.IO.File]::WriteAllText($harnessVersionPath, $harnessVersionContent, (New-Object System.Text.UTF8Encoding $false))
+    Write-Host "已寫入：.harness-version (version=$skillVersion)"
+}
+
 Write-Host ""
 Write-Host "=== 完成 ===" -ForegroundColor Green
 Write-Host "建立 $($created.Count) 個檔案，略過 $($skipped.Count) 個。"
