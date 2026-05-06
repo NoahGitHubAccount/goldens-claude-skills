@@ -36,7 +36,7 @@
 
 ## 未決問題
 
-- [ ] 是否把 `~/.claude/skills/harness-engineer` 改成 symlink 指向 repo 端，避免雙向同步？需確認 Golden 機器是否啟用「開發者模式」或以管理員身分執行
+- [x] ~~`~/.claude/skills/harness-engineer` 改成 symlink 指向 repo 端~~ — 2026-05-05 改用 Junction（symlink 需 admin/開發者模式，Junction 不需要），舊副本歸檔至 `D:\dev\__archive\harness-engineer-pre-junction-2026-05-05\`
 - [ ] CHANGELOG 是否拆成「repo 級」與「每個 skill 級」兩份？目前先合併在 repo root 一份
 
 ## Deferred（延後決策）
