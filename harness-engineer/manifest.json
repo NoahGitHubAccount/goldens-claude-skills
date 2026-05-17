@@ -1,6 +1,6 @@
 {
   "skill": "harness-engineer",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "spec_version": 1,
   "_comment": "kind 分類用於未來 upgrade-harness.ps1：seed=init 寫入專案、升級不覆蓋；optional-core=範本、使用者自取、升級可覆蓋；tool=scripts 本身、不進專案。",
   "files": {
@@ -11,6 +11,7 @@
     "templates/README.md.tmpl":          { "kind": "seed", "destination": "README.md" },
     "templates/docs/README.md.tmpl":     { "kind": "seed", "destination": "docs/README.md" },
     "templates/notes/README.md.tmpl":    { "kind": "seed", "destination": "notes/README.md" },
+    "templates/backlog.md.tmpl":         { "kind": "seed", "destination": "input/backlog.md" },
 
     "assets/hooks/pre-write-guard.ps1.tmpl":      { "kind": "optional-core", "destination": ".claude/hooks/pre-write-guard.ps1" },
     "assets/hooks/post-edit-format.ps1.tmpl":     { "kind": "optional-core", "destination": ".claude/hooks/post-edit-format.ps1" },
