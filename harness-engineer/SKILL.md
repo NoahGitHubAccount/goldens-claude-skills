@@ -76,22 +76,26 @@ Progressive disclosure 三層：YAML metadata → SKILL.md → scripts/templates
 ### 步驟 1：建立 `plan.md`
 真實任務必須先做計畫再動手。從 `templates/plan.md.tmpl` 複製，包含：目標 / 驗收條件 / Phase 1–N（產出物、預估工時、阻塞風險）/ 未決問題。
 
-### 步驟 2：建立 `status.md`
-跨日協作恢復用。從 `templates/status.md.tmpl` 複製，包含：最後更新時間 / 進行中任務 / 已完成 checkpoint / 下次第一步 / blocker。
+### 步驟 2：建立 `input/backlog.md`（Single Source of Truth）
+工項狀態的唯一來源。從 `templates/backlog.md.tmpl` 複製，格式為表格：ID / 說明 / 狀態（⬜🔨✅🚫⏸）/ 依賴 / 完成日。
+**規則：phase 細節檔只存規格說明，不含 checkbox；所有狀態異動只改此檔。**
+
+### 步驟 3：建立 `status.md`
+跨日協作恢復用。從 `templates/status.md.tmpl` 複製，格式為「當前工項 ID 指針 + 下一步指令」，不再維護 checkbox 清單。
 **建議在 `.gitignore` 排除（個人狀態）或保留追蹤（團隊共享）—— 詢問使用者偏好。**
 
-### 步驟 3：建立 `learnings.md`
+### 步驟 4：建立 `learnings.md`
 **For Agent，非 for human。** 從 `templates/learnings.md.tmpl` 複製。條目格式：
 ```
 [YYYY-MM-DD] 情境 → 錯誤 → 根因 → 規避規則
 ```
 Agent 在每次 session 開始時應主動讀取，避免重複犯錯浪費 token。
 
-### 步驟 4：建立 `README.md`
+### 步驟 5：建立 `README.md`
 人類向。從 `templates/README.md.tmpl` 複製，包含：一句話簡介 / 安裝程序（或安裝文件路徑）/ 啟停用方法（或文件路徑）/ 目錄樹 / 連結到 `/docs/`。
 **規則：README 過長（> 200 行）時，內容外推到 `/docs`，README 只放路徑連結。**
 
-### 步驟 5：建立 `/docs` 與 `/notes` 兩目錄
+### 步驟 6：建立 `/docs`、`/notes`、`/status-history` 三目錄
 - `/docs/`：人類可閱讀的專案文件（架構、API、部署、疑難排解）。複製 `templates/docs/README.md.tmpl`。
 - `/notes/`：成果分享素材庫，含初始 / 過程提示詞、套件依賴、skill 依賴、成效數據（md 格式），會餵給 `pptx-generator` 產出簡報。複製 `templates/notes/README.md.tmpl`。
 
@@ -120,11 +124,13 @@ Agent 在每次 session 開始時應主動讀取，避免重複犯錯浪費 toke
 
 - [ ] CLAUDE.md（Agent 地圖）
 - [ ] plan.md（任務階段化規劃）
-- [ ] status.md（跨日恢復）
+- [ ] input/backlog.md（唯一工項狀態來源）
+- [ ] status.md（當前工項 ID 指針）
 - [ ] learnings.md（Agent 經驗檔）
 - [ ] README.md（人類可讀）
 - [ ] docs/（人類向文件目錄）
 - [ ] notes/（pptx-generator 素材源）
+- [ ] status-history/（已完成 checkpoint 歸檔）
 - [ ] .claude/hooks/（Hook 範本已複製，settings 由使用者自行啟用）
 - [ ] .gitignore（status.md 是否需排除 — 已詢問）
 - [ ] 初次 commit 訊息建議：`chore: bootstrap harness via harness-engineer skill`

@@ -16,15 +16,18 @@ param(
 $ErrorActionPreference = 'Stop'
 
 $expected = @(
-    @{ Path = 'CLAUDE.md';        Type = 'file'; Desc = 'Agent 地圖' }
-    @{ Path = 'README.md';        Type = 'file'; Desc = '人類可讀入口' }
-    @{ Path = 'plan.md';          Type = 'file'; Desc = '任務計畫' }
-    @{ Path = 'status.md';        Type = 'file'; Desc = '跨日恢復狀態' }
-    @{ Path = 'learnings.md';     Type = 'file'; Desc = 'Agent 經驗檔' }
-    @{ Path = 'docs';             Type = 'dir';  Desc = '人類向文件目錄' }
-    @{ Path = 'docs/README.md';   Type = 'file'; Desc = 'docs 索引' }
-    @{ Path = 'notes';            Type = 'dir';  Desc = 'pptx-generator 素材源' }
-    @{ Path = 'notes/README.md';  Type = 'file'; Desc = 'notes 說明' }
+    @{ Path = 'CLAUDE.md';           Type = 'file'; Desc = 'Agent 地圖' }
+    @{ Path = 'README.md';           Type = 'file'; Desc = '人類可讀入口' }
+    @{ Path = 'plan.md';             Type = 'file'; Desc = '任務計畫' }
+    @{ Path = 'status.md';           Type = 'file'; Desc = '跨日恢復狀態（工項 ID 指針）' }
+    @{ Path = 'learnings.md';        Type = 'file'; Desc = 'Agent 經驗檔' }
+    @{ Path = 'input';               Type = 'dir';  Desc = '工項管理目錄' }
+    @{ Path = 'input/backlog.md';    Type = 'file'; Desc = '唯一工項狀態來源（Single Source of Truth）' }
+    @{ Path = 'status-history';      Type = 'dir';  Desc = '已完成 checkpoint 歸檔' }
+    @{ Path = 'docs';                Type = 'dir';  Desc = '人類向文件目錄' }
+    @{ Path = 'docs/README.md';      Type = 'file'; Desc = 'docs 索引' }
+    @{ Path = 'notes';               Type = 'dir';  Desc = 'pptx-generator 素材源' }
+    @{ Path = 'notes/README.md';     Type = 'file'; Desc = 'notes 說明' }
 )
 
 Write-Host ""

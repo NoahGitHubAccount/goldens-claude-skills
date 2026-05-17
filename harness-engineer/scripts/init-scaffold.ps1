@@ -60,6 +60,7 @@ $mapping = @(
     @{ Src = 'README.md.tmpl';             Dst = 'README.md' }
     @{ Src = 'docs/README.md.tmpl';        Dst = 'docs/README.md' }
     @{ Src = 'notes/README.md.tmpl';       Dst = 'notes/README.md' }
+    @{ Src = 'backlog.md.tmpl';            Dst = 'input/backlog.md' }
 )
 
 Write-Host ""
@@ -101,7 +102,7 @@ foreach ($m in $mapping) {
 }
 
 # 建立空目錄（assets 等）
-$emptyDirs = @('docs/adr', 'notes/assets')
+$emptyDirs = @('docs/adr', 'notes/assets', 'input', 'status-history')
 foreach ($d in $emptyDirs) {
     $full = Join-Path $ProjectPath $d
     if (-not (Test-Path -LiteralPath $full)) {

@@ -2,20 +2,15 @@
 
 ## 最後更新：{{TODAY}}
 
-## 進行中任務
+## 當前工項
 
-- [ ] [plan.md Phase 1] 任務描述
+🔨 **?** — （填入工項 ID 與說明，詳見 `input/backlog.md`）
 
-## 已完成 checkpoint
+## 下一步指令
 
-（依時間倒序）
-- _尚無_
-
-## 下次啟動第一步
-
-（重啟 session 後 Agent 應該從這裡接手）
-
-例：打開 `src/xxx.ts`，實作 `fooBar()` 函數的 edge case 處理。
+1. 查 `input/backlog.md` 確認此工項依賴已完成
+2. （具體行動，例：打開 `src/xxx.ts` 實作 `fooBar()`）
+3. 驗收：符合 `input/backlog.md` 對應 ID 的驗收條件
 
 ## Blocker
 
@@ -32,5 +27,6 @@
 
 ---
 
-> 此檔案會由 `stop-status-snapshot.ps1` hook 自動更新「最後更新」「Git 狀態」欄位。
-> 「下次啟動第一步」與「Blocker」需手動維護。
+> 此檔案只存「當前工項 ID 指針」與「下一步指令」。
+> 工項完成狀態改在 `input/backlog.md`，已完成 checkpoint 移至 `status-history/`。
+> `stop-status-snapshot.ps1` hook 自動更新「最後更新」「Git 狀態」欄位。

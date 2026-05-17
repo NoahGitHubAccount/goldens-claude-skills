@@ -24,11 +24,18 @@
 | 過去錯誤 | `learnings.md` |
 | 任務計畫 | `plan.md` |
 | 當前進度 | `status.md` |
+| **工項追蹤** | **`input/backlog.md`** |
 | 設計決策 | `docs/adr/` |
 | 成果素材 | `notes/` |
 
 ## Session 啟動 SOP
-1. 讀 `status.md` 了解上次進度
-2. 讀 `learnings.md` 索引避免重複錯誤
-3. 讀 `plan.md` 確認當前 Phase
-4. 開工
+1. 讀 `status.md` → 找到當前工項 ID
+2. 查 `input/backlog.md` → 確認該工項依賴是否完成、狀態是否可開工
+3. 讀 `learnings.md` 索引避免重複錯誤
+4. 讀 `plan.md` 確認當前 Phase 範圍
+5. 開工
+
+## 重要規則
+- **工項狀態只改 `input/backlog.md`**，不改 phase 細節檔（phase 檔只存規格說明）
+- 取消工項用刪除線 + 🚫 保留，不刪除行
+- 新增工項先在 `input/backlog.md` 給定唯一 ID，再在細節檔補驗收條件
