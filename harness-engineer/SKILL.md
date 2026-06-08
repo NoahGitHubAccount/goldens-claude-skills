@@ -1,176 +1,73 @@
-# Harness Engineer Skill
+# Harness Engineer Skill — 使用指南
 
-**Name:** harness-engineer  
-**Purpose:** Build comprehensive engineering scaffolding for AI-collaborative projects  
-**Triggers:** New project setup, scaffold requests, repo modernization for agent-friendly workflows
+我是 **Harness Engineer**，負責為當前專案建構 Agent-friendly 的工程鷹架。
 
----
+## 📋 我的職責
 
-## Overview
+我會幫你建立或稽核以下五個維度的基礎設施：
 
-This skill constructs a reliable **Agent Harness**—constraints, templates, and feedback loops—enabling consistent AI collaboration across sessions. The harness prevents context loss, reduces repeated mistakes, and establishes normalized workflows.
+1. **Context Map**（`CLAUDE.md`）— Agent 的工作地圖與禁止清單
+2. **Modular Skills**（`.claude/skills/`）— 可重用的技能模組
+3. **Mechanical Enforcement**（Hook 範本）— 自動化品質閘門
+4. **MCP Connectivity**（外部資源連接）— 結構化資料存取
+5. **Self-Improving Loop**（`learnings.md`）— Agent 經驗積累系統
 
----
+## ✅ 觸發條件
 
-## Trigger Conditions
+我會在以下情況自動啟動：
 
-**Execute when:**
-- User explicitly requests "scaffolding / init / setup harness / engineering governance"
-- Starting a new project or converting existing repos for agent collaboration
-- User reports "Claude forgets progress after restart" or "same errors repeat"
-- Establishing standardized workflows for repetitive tasks
+- 你明示「建立鷹架 / scaffolding / 初始化專案 / setup harness」
+- 你進入新目錄或需改造既有 repo
+- 你抱怨「Claude Code 重啟後忘記進度」或「重複犯同樣錯誤」
 
-**Skip when:**
-- Single-session Q&A or minor edits without structural intent
-- Complete harness already exists (CLAUDE.md, input/backlog.md, status.md, learnings.md, README.md, docs/, notes/) and no audit requested
+**跳過條件：** 單次 Q&A 或小修改；或完整鷹架（CLAUDE.md、input/backlog.md、status.md、learnings.md、README.md、docs/、notes/）已存在且未要求稽核。
 
----
+## 🚀 Golden 專案必備項目
 
-## Execution Modes
+1. **`input/backlog.md`** — 規劃 + 工項唯一來源（整合原 plan.md）
+   - 專案目標與驗收條件
+   - Phase 1–N 分階段計畫（交付物、預估、阻礙）
+   - Backlog 表格（ID / 描述 / 狀態 ⬜🔨✅🚫⏸ / 相依 / 完成日）
+   - 開放問題
+   - **規則：** 狀態只在此更新；其他文件只含規格，不含 checkbox；`input/` 目錄可擴充（如 `input/requirements.md`、`input/constraints.md`）
+2. **`status.md`** — 當前工項指針（會話恢復用，不用 checkbox）
+3. **`learnings.md`** — Agent 經驗檔（格式：`[YYYY-MM-DD] 情境 → 錯誤 → 根因 → 規避規則`）
+4. **`README.md`** — 人類可讀簡介與文件導航（超過 200 行請移至 docs/）
+5. **`/input/`、`/docs/`、`/notes/`、`/status-history/`** — 規劃樞紐、詳細文件、簡報素材、快照封存
 
-Use **Glob detection** first to categorize:
+## 🔄 執行模式
 
-| Mode | Condition | Action |
-|------|-----------|--------|
-| `init` | Directory empty or most scaffolding missing | Build complete harness; copy + substitute templates |
-| `audit` | Partial scaffolding exists or explicit audit request | Report present/missing/inconsistent items; no writes |
-| `migrate` | User requests structure change (e.g., `.agent/` → `.claude/`) | Execute only on explicit instruction |
+先用 Glob 偵測判斷模式：
 
----
+| 模式 | 條件 | 動作 |
+|------|------|------|
+| `init` | 目錄空或大部分鷹架缺失 | 建立完整鷹架，套用範本變數 |
+| `audit` | 部分鷹架存在或明確要求稽核 | 列出存在 / 缺失 / 不一致項目，不寫檔 |
+| `migrate` | 使用者要求結構調整 | 僅在明確指示下執行（例：plan.md → input/） |
 
-## Five Dimensions
+## 📝 執行流程
 
-### 1. **Context Map** (CLAUDE.md as Index)
-One-page Agent reference linking to detailed docs. Contains: project tagline, tech stack, prohibitions (in Traditional Chinese), and pointers to `/docs/architecture.md`, `learnings.md`, `status.md`, `input/backlog.md`.
+1. 掃描當前目錄（判斷 init / audit / migrate 模式）
+2. 詢問：專案名稱、一句話定位、技術棧、status.md 是否加入 .gitignore
+3. 複製範本並替換變數：`{{PROJECT_NAME}}`、`{{PROJECT_TAGLINE}}`、`{{TODAY}}`、`{{TECH_STACK}}`、`{{AUTHOR}}`（預設 Golden）
+4. 回報已建立檔案清單與下一步建議（最多三項）、延後事項
 
-### 2. **Modular Skills**
-Separate skill directories for high-frequency tasks. YAML metadata + SKILL.md + scripts/templates. Progressive disclosure avoids overwhelming long documents.
+## 🌏 語言規範
 
-### 3. **Mechanical Enforcement**
-Hook templates (PreToolUse, PostToolUse, Stop, UserPromptSubmit) enforce guardrails automatically. Non-compliant actions exit with code 2 + error feedback. *Provide templates only; user enables in settings.json.*
+所有寫入專案的檔案內容（CLAUDE.md、status.md、learnings.md、README.md 等）**一律使用繁體中文**，除非專案 CLAUDE.md 明確指定其他語言。
 
-### 4. **MCP Connectivity**
-External resources (Jira, databases, logs) accessed via MCP servers returning structured data, not guessed APIs.
+## 📦 plan.md 遷移指引
 
-### 5. **Self-Improving Loop**
-`learnings.md` (persistent experience) + `eval.json` (binary verification) enable continuous refinement. Stop hook writes lessons back after task completion.
+稽核到專案根目錄仍有 `plan.md` 時：
+1. 將階段計畫移入 `input/backlog.md` 的 Phase 計畫區段
+2. 將工項移入 Backlog 表格
+3. 刪除根目錄 `plan.md`
+4. 更新 `CLAUDE.md` 指標：`plan.md` → `input/backlog.md`
 
----
+## 📊 pptx-generator 整合
 
-## Core Scaffolding Artifacts
-
-### Step 1: `input/backlog.md` (Single Source of Truth)
-**Combined planning and tracking hub.** Contains:
-- **Project Objectives** — goals and acceptance criteria
-- **Phase Plan** — Phase 1–N with deliverables, estimates, blockers
-- **Backlog table** — ID / Description / Status (⬜🔨✅🚫⏸) / Dependencies / Completion Date
-- **Open Questions**
-
-**Rules:**
-- Status changes only here; other docs contain specs only, no checkboxes
-- Replaces the former root-level `plan.md` — all planning lives in `input/`
-- The `input/` directory is the single planning hub; add additional input files as needed (e.g., `input/requirements.md`, `input/constraints.md`)
-
-### Step 2: `status.md`
-Session recovery pointer. Format: current work item ID + next instruction. No checkbox lists.  
-**Inquiry:** Should this be in `.gitignore` (personal) or tracked (team-shared)?
-
-### Step 3: `learnings.md` (Agent-Focused)
-Format: `[YYYY-MM-DD] Situation → Error → Root Cause → Avoidance Rule`  
-Agents read on session start to prevent repeated mistakes.
-
-### Step 4: `README.md` (Human-Readable)
-One-sentence intro, installation reference, start/stop methods, directory tree, links to `/docs/`.  
-**Rule:** If > 200 lines, externalize to `/docs/` and link from README.
-
-### Step 5: Four Directories
-- `/input/` — Planning hub: backlog, requirements, constraints, and all upstream inputs
-- `/docs/` — Architecture, APIs, deployment, troubleshooting
-- `/notes/` — Presentation materials for `pptx-generator` (dated topic markdown with prompt history, dependencies, outcomes)
-- `/status-history/` — Archived checkpoints
+`/notes/` 下的 `YYYYMMDD-主題.md` 作為簡報生成輸入，必填欄位：標題 / 一句話定位、初始 prompt、過程 prompt 摘要、套件相依、Skill 相依、量化成果（指標、截圖）。
 
 ---
 
-## Migration: plan.md → input/backlog.md
-
-When auditing a project that still has a root-level `plan.md`:
-1. Move phase plan content into the **Phase Plan** section of `input/backlog.md`
-2. Move work items into the **Backlog table**
-3. Delete `plan.md` from root
-4. Update `CLAUDE.md` pointers from `plan.md` → `input/backlog.md`
-
----
-
-## pptx-generator Integration
-
-`/notes/` markdown (named `YYYYMMDD-topic.md`) feeds presentation generation. Required fields:
-- Title / one-sentence positioning
-- Initial prompt (project driver)
-- Process prompt summary (turning points)
-- Package dependencies (package.json / requirements.txt excerpts)
-- Skill dependencies (which .claude/skills or .agent/skills used)
-- Quantified outcomes (metrics, screenshots)
-
----
-
-## Execution Checklist (Output to User)
-
-```markdown
-## Harness Implementation Checklist
-
-- [ ] CLAUDE.md (Agent map)
-- [ ] input/backlog.md (planning hub + single work item source)
-- [ ] status.md (current pointer + next step)
-- [ ] learnings.md (Agent experience log)
-- [ ] README.md (human reference)
-- [ ] docs/ (documentation directory)
-- [ ] notes/ (pptx-generator materials)
-- [ ] status-history/ (archived checkpoints)
-- [ ] .claude/hooks/ (templates copied; user enables in settings)
-- [ ] .gitignore (status.md exclusion preference confirmed)
-- [ ] Initial commit: `chore: bootstrap harness via harness-engineer skill`
-```
-
----
-
-## Language Constraint
-
-All agent output, file content written to projects, and user-facing messages **must be in Traditional Chinese (繁體中文)** unless the project's CLAUDE.md explicitly specifies otherwise. This applies to:
-- CLAUDE.md, status.md, learnings.md, README.md content
-- Checklist output, next steps, deferred items
-- Inline comments and section headers within generated files
-
-The SKILL.md itself (this file) may remain in English as it is skill metadata.
-
----
-
-## Output Format
-
-**1. 已建立項目**  
-List files actually written with paths.
-
-**2. 下一步**（最多三項）  
-E.g., "填寫 input/backlog.md Phase 1 目標," "啟用 stop-status-snapshot hook," "設定專案 MCP server."
-
-**3. 延後事項**  
-Audit findings or user-declined options.
-
----
-
-## Template Variables
-
-Placeholders substituted by rendering:
-- `{{PROJECT_NAME}}` — Project name
-- `{{PROJECT_TAGLINE}}` — One-sentence positioning
-- `{{TODAY}}` — Today (YYYY-MM-DD)
-- `{{TECH_STACK}}` — Technology stack
-- `{{AUTHOR}}` — Author (default: Golden)
-
----
-
-## Pre-Execution Questions (init mode)
-
-1. Project name?
-2. One-sentence tagline?
-3. Technology stack?
-4. Include status.md in .gitignore? (personal vs. team-shared preference)
+**準備好開始了嗎？告訴我：專案名稱、一句話定位、技術棧。** ✨
