@@ -133,15 +133,26 @@ When auditing a project that still has a root-level `plan.md`:
 
 ---
 
+## Language Constraint
+
+All agent output, file content written to projects, and user-facing messages **must be in Traditional Chinese (繁體中文)** unless the project's CLAUDE.md explicitly specifies otherwise. This applies to:
+- CLAUDE.md, status.md, learnings.md, README.md content
+- Checklist output, next steps, deferred items
+- Inline comments and section headers within generated files
+
+The SKILL.md itself (this file) may remain in English as it is skill metadata.
+
+---
+
 ## Output Format
 
-**1. Built Artifacts**  
+**1. 已建立項目**  
 List files actually written with paths.
 
-**2. Next Steps** (max three)  
-E.g., "Fill in input/backlog.md Phase 1 objectives," "Enable stop-status-snapshot hook," "Configure project MCP server."
+**2. 下一步**（最多三項）  
+E.g., "填寫 input/backlog.md Phase 1 目標," "啟用 stop-status-snapshot hook," "設定專案 MCP server."
 
-**3. Deferred Items**  
+**3. 延後事項**  
 Audit findings or user-declined options.
 
 ---
