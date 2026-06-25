@@ -7,6 +7,7 @@ Claude Code 全域 skill 集合。clone 後把要用的 skill 資料夾放到 `~
 | 名稱 | 用途 |
 |---|---|
 | [`harness-engineer`](./harness-engineer) | 為新專案建立 Agent 鷹架（CLAUDE.md / plan / status / learnings / README / docs / notes / hook 範本） |
+| [`integration-test-authoring`](./integration-test-authoring) | 從任意素材（SA 文件 / 需求情境 / 畫面截圖 / 操作手冊 / 程式碼 / 單元測試）抽取業務情境，產出情境式整合測試案例（端到端 + 角色驅動 + 狀態流轉 + 需求追溯），可橋接自動化與報告 md→docx |
 
 ## 安裝
 

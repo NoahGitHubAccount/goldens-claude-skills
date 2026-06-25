@@ -6,6 +6,19 @@ skill 版本獨立管理，個別版本標記於各 skill 目錄下的 `manifest
 
 ## [Unreleased]
 
+## [integration-test-authoring 0.1.0] — 2026-06-25
+
+### Added
+- integration-test-authoring skill 初版，情境式整合測試案例撰寫，三層 progressive disclosure
+  - `SKILL.md`：主協定（四大核心觀念：端到端 / 角色驅動 / 狀態流轉 / 需求追溯；三段式步驟：前置準備 / 驗測情境步驟 / 結果檢視；品質檢核表 7 項）
+  - `references/format-and-examples.md`：欄位定義、寫法規範、3 個黃金範例（以訂單出貨系統通用化示意）、狀態機參考
+  - `references/extraction-by-input-type.md`：6 類輸入素材（SA / User Story / 截圖 / 操作手冊 / 程式碼 / 單元測試）的抽取策略與陷阱
+  - `references/automation-and-reporting.md`：對齊既有單元測試架構、案例↔pytest 結構對應、報告 md→docx 管線
+- `manifest.json`：標記 skill 版本與檔案清單
+
+### Notes
+- 範例全數通用化（不含任何特定產品 / 客戶 specifics），適合公開分享
+
 ## [harness-engineer 0.1.0] — 2026-05-05
 
 ### Added

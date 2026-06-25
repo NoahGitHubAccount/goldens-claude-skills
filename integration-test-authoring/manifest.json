@@ -1,0 +1,12 @@
+{
+  "skill": "integration-test-authoring",
+  "version": "0.1.0",
+  "spec_version": 1,
+  "_comment": "情境式整合測試案例撰寫 skill。純文件型 skill：SKILL.md 主協定 + references 三份依需載入指南，無 templates/scripts。",
+  "files": {
+    "SKILL.md":                              { "kind": "tool" },
+    "references/format-and-examples.md":     { "kind": "tool" },
+    "references/extraction-by-input-type.md":{ "kind": "tool" },
+    "references/automation-and-reporting.md":{ "kind": "tool" }
+  }
+}
