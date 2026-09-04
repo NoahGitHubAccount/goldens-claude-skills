@@ -56,7 +56,7 @@ $mapping = @(
     @{ Src = 'CLAUDE.md.tmpl';            Dst = 'CLAUDE.md' }
     @{ Src = 'plan.md.tmpl';               Dst = 'plan.md' }
     @{ Src = 'status.md.tmpl';             Dst = 'status.md' }
-    @{ Src = 'learnings.md.tmpl';          Dst = 'learnings.md' }
+    @{ Src = 'learnings/README.md.tmpl';   Dst = 'learnings/README.md' }
     @{ Src = 'README.md.tmpl';             Dst = 'README.md' }
     @{ Src = 'docs/README.md.tmpl';        Dst = 'docs/README.md' }
     @{ Src = 'notes/README.md.tmpl';       Dst = 'notes/README.md' }
@@ -102,7 +102,7 @@ foreach ($m in $mapping) {
 }
 
 # 建立空目錄（assets 等）
-$emptyDirs = @('docs/adr', 'notes/assets', 'input', 'status-history')
+$emptyDirs = @('docs/adr', 'notes/assets', 'input', 'status-history', 'learnings/cards')
 foreach ($d in $emptyDirs) {
     $full = Join-Path $ProjectPath $d
     if (-not (Test-Path -LiteralPath $full)) {
@@ -143,6 +143,13 @@ if ($DryRun) {
 } else {
     [System.IO.File]::WriteAllText($harnessVersionPath, $harnessVersionContent, (New-Object System.Text.UTF8Encoding $false))
     Write-Host "已寫入：.harness-version (version=$skillVersion)"
+}
+
+# 產生初始的經驗卡索引（此時還沒有卡片，索引會提示如何建立第一張）
+$indexScript = Join-Path $PSScriptRoot 'build-learning-index.ps1'
+if ((Test-Path -LiteralPath $indexScript) -and -not $DryRun) {
+    & $indexScript -ProjectPath $ProjectPath -Quiet
+    Write-Host "已產生：learnings/INDEX.md"
 }
 
 Write-Host ""

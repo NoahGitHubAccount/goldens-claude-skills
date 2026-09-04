@@ -20,7 +20,10 @@ $expected = @(
     @{ Path = 'README.md';           Type = 'file'; Desc = '人類可讀入口' }
     @{ Path = 'plan.md';             Type = 'file'; Desc = '任務計畫' }
     @{ Path = 'status.md';           Type = 'file'; Desc = '跨日恢復狀態（工項 ID 指針）' }
-    @{ Path = 'learnings.md';        Type = 'file'; Desc = 'Agent 經驗檔' }
+    @{ Path = 'learnings';           Type = 'dir';  Desc = '經驗教訓卡目錄' }
+    @{ Path = 'learnings/README.md'; Type = 'file'; Desc = '卡片格式與命名規則' }
+    @{ Path = 'learnings/cards';     Type = 'dir';  Desc = '卡片本體（一張卡一個檔，避免多人推 git 衝突）' }
+    @{ Path = 'learnings/INDEX.md';  Type = 'file'; Desc = '卡片索引（由腳本產生）' }
     @{ Path = 'input';               Type = 'dir';  Desc = '工項管理目錄' }
     @{ Path = 'input/backlog.md';    Type = 'file'; Desc = '唯一工項狀態來源（Single Source of Truth）' }
     @{ Path = 'status-history';      Type = 'dir';  Desc = '已完成 checkpoint 歸檔' }
@@ -50,6 +53,15 @@ foreach ($e in $expected) {
 }
 
 Write-Host ""
+$legacyLearnings = Join-Path $ProjectPath 'learnings.md'
+if (Test-Path -LiteralPath $legacyLearnings) {
+    Write-Host "=== 舊版結構偵測 ===" -ForegroundColor Yellow
+    Write-Host "[MIGRATE] 發現舊版 learnings.md（單一檔案）" -ForegroundColor Yellow
+    Write-Host "          多人協作推 git 時單一檔案必定衝突，建議拆成 learnings/cards/ 下的個別卡片。"
+    Write-Host '          每則教訓執行一次：scripts/new-learning-card.ps1 -Title "教訓標題"'
+    Write-Host ""
+}
+
 Write-Host "=== Skills 路徑偵測 ==="
 $claudeSkills = Test-Path -LiteralPath (Join-Path $ProjectPath '.claude/skills') -PathType Container
 $agentSkills = Test-Path -LiteralPath (Join-Path $ProjectPath '.agent/skills') -PathType Container

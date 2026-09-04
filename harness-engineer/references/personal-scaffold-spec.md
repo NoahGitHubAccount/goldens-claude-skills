@@ -10,7 +10,7 @@
 | `README.md` | 人類 | ✅ | 中 |
 | `plan.md` | Agent + 人類 | ✅ | 中（每階段） |
 | `status.md` | Agent + 人類 | 看情況 | 高（每次任務結束） |
-| `learnings.md` | Agent | ✅ | 中（每次失誤） |
+| `learnings/cards/` | Agent | ✅ | 中（每次失誤，一張卡一個檔） |
 | `docs/` | 人類 | ✅ | 中 |
 | `notes/` | 人類 + pptx-generator | ✅ | 低（重大成果時） |
 
@@ -69,7 +69,7 @@ Claude Code 重啟後沒有上下文記憶，需要 status.md 作為「恢復點
 
 啟用 `stop-status-snapshot.ps1` hook，在 session 結束時自動更新「最後更新」「Git 狀態」兩欄，使用者只需手動填「下次第一步」。
 
-## learnings.md：Agent 經驗檔
+## learnings/：經驗教訓卡
 
 ### 為什麼必要
 
@@ -89,7 +89,7 @@ Claude Code 重啟後沒有上下文記憶，需要 status.md 作為「恢復點
 
 ### 自動化建議
 
-啟用 `post-bash-learning.ps1` hook，在 Bash 失敗時自動把指令與 stderr 摘要追加到 learnings.md 的「待整理」區，使用者再決定要不要保留 / 整理成正式條目。
+啟用 `post-bash-learning.ps1` hook，在 Bash 失敗時自動把指令與 stderr 摘要寫入 `learnings/inbox.md`，使用者再決定要不要用 `new-learning-card.ps1` 整理成正式卡片。收件匣建議加入 .gitignore。
 
 ## README.md：人類可讀
 

@@ -10,7 +10,7 @@
 2. **Modular Skills**（`.claude/skills/`）— 可重用的技能模組
 3. **Mechanical Enforcement**（Hook 範本）— 自動化品質閘門
 4. **MCP Connectivity**（外部資源連接）— 結構化資料存取
-5. **Self-Improving Loop**（`learnings.md`）— Agent 經驗積累系統
+5. **Self-Improving Loop**（`learnings/`）— 經驗教訓卡，可多人協作推 git
 
 ## ✅ 觸發條件
 
@@ -20,7 +20,7 @@
 - 你進入新目錄或需改造既有 repo
 - 你抱怨「Claude Code 重啟後忘記進度」或「重複犯同樣錯誤」
 
-**跳過條件：** 單次 Q&A 或小修改；或完整鷹架（CLAUDE.md、input/backlog.md、status.md、learnings.md、README.md、docs/、notes/）已存在且未要求稽核。
+**跳過條件：** 單次 Q&A 或小修改；或完整鷹架（CLAUDE.md、input/backlog.md、status.md、learnings/、README.md、docs/、notes/）已存在且未要求稽核。
 
 ## 🚀 Golden 專案必備項目
 
@@ -31,7 +31,12 @@
    - 開放問題
    - **規則：** 狀態只在此更新；其他文件只含規格，不含 checkbox；`input/` 目錄可擴充（如 `input/requirements.md`、`input/constraints.md`）
 2. **`status.md`** — 當前工項指針（會話恢復用，不用 checkbox）
-3. **`learnings.md`** — Agent 經驗檔（格式：`[YYYY-MM-DD] 情境 → 錯誤 → 根因 → 規避規則`）
+3. **`learnings/`** — 經驗教訓卡目錄（**一張卡一個檔**，供團隊協作推 git）
+   - `learnings/README.md` — 卡片格式與命名規則
+   - `learnings/cards/YYYYMMDD-HHmm-作者-短標題.md` — 卡片本體
+   - `learnings/INDEX.md` — 由 `build-learning-index.ps1` 產生，勿手改
+   - **為什麼拆檔：** 單一 `learnings.md` 在兩人同時新增教訓時必定衝突；
+     拆成一張卡一個檔，各自新增互不干擾。檔名帶時間與作者，避開碰撞也看得出來源
 4. **`README.md`** — 人類可讀簡介與文件導航（超過 200 行請移至 docs/）
 5. **`/input/`、`/docs/`、`/notes/`、`/status-history/`** — 規劃樞紐、詳細文件、簡報素材、快照封存
 
@@ -54,7 +59,7 @@
 
 ## 🌏 語言規範
 
-所有寫入專案的檔案內容（CLAUDE.md、status.md、learnings.md、README.md 等）**一律使用繁體中文**，除非專案 CLAUDE.md 明確指定其他語言。
+所有寫入專案的檔案內容（CLAUDE.md、status.md、learnings/、README.md 等）**一律使用繁體中文**，除非專案 CLAUDE.md 明確指定其他語言。
 
 ## 📦 plan.md 遷移指引
 
@@ -63,6 +68,31 @@
 2. 將工項移入 Backlog 表格
 3. 刪除根目錄 `plan.md`
 4. 更新 `CLAUDE.md` 指標：`plan.md` → `input/backlog.md`
+
+## 🧠 經驗教訓卡操作
+
+| 動作 | 指令 |
+|---|---|
+| 新增一張卡 | `scripts/new-learning-card.ps1 -Title "標題" -Tags "標籤1,標籤2" -Severity high` |
+| 重建索引 | `scripts/build-learning-index.ps1` |
+
+- 作者取自 `git config user.name`，不必手動指定
+- `INDEX.md` 由卡片推導而來；git 衝突時**不要手動合併**，重跑腳本覆蓋即可
+- 卡片不刪除，過時的把 front matter 的 `status` 改成 `archived`
+
+**Session 啟動時：** 先讀 `learnings/INDEX.md`，命中相關情境再展開該張卡，
+不要一次讀完所有卡片。
+
+## 🔁 learnings.md 遷移指引
+
+稽核到專案根目錄仍有單一 `learnings.md` 時：
+
+1. 逐則教訓執行 `new-learning-card.ps1 -Title "該則教訓的標題"`
+2. 把原本的情境／錯誤／根因／規避規則貼進對應段落
+3. 依內容補上 `tags` 與 `severity`
+4. 執行 `build-learning-index.ps1` 產生索引
+5. 刪除根目錄 `learnings.md`
+6. 更新 `CLAUDE.md` 指標：`learnings.md` → `learnings/INDEX.md`
 
 ## 📊 pptx-generator 整合
 

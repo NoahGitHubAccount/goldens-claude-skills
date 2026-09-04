@@ -14,7 +14,7 @@
 4. **語言 / 風格規則**（如「所有回應使用繁體中文」）
 5. **指引到子文件的連結地圖**：
    - 詳細架構 → `docs/architecture.md`
-   - 過去錯誤 → `learnings.md`
+   - 過去錯誤 → `learnings/INDEX.md`
    - 當前進度 → `status.md`
    - 任務計畫 → `plan.md`
    - 設計決策 → `docs/adr/`

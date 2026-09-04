@@ -11,9 +11,9 @@ Harness Engineering 強調 **Mechanical Enforcement（機械式強制執行）**
 | Hook | 觸發時機 | 典型用途 |
 |---|---|---|
 | `PreToolUse` | Agent 呼叫工具前 | 阻擋危險指令、檢查權限、驗證輸入 |
-| `PostToolUse` | 工具呼叫成功後 | 自動格式化、跑單元測試、寫 learnings |
+| `PostToolUse` | 工具呼叫成功後 | 自動格式化、跑單元測試、蒐集失敗訊息 |
 | `Stop` | 對話 / 任務結束時 | 更新 status.md、跑 eval、產生快照 |
-| `UserPromptSubmit` | 使用者送出 prompt 時 | 注入 status.md 摘要、自動載入 learnings |
+| `UserPromptSubmit` | 使用者送出 prompt 時 | 注入 status.md 摘要、載入經驗卡索引 |
 | `SessionStart` | Session 開始 | 載入專案上下文 |
 | `SubagentStop` | 子 agent 結束 | 收集子 agent 報告 |
 
@@ -45,7 +45,7 @@ Golden 的環境是 Windows PowerShell。所有 hook 範本以 `.ps1` 為主，�
 | `pre-write-guard.ps1.tmpl` | PreToolUse:Write\|Edit | 阻擋寫入 secrets / 根目錄散落 .md |
 | `post-edit-format.ps1.tmpl` | PostToolUse:Edit | 依副檔名觸發 prettier/black/dotnet format |
 | `stop-status-snapshot.ps1.tmpl` | Stop | 自動更新 `status.md` 的時間與 git HEAD |
-| `post-bash-learning.ps1.tmpl` | PostToolUse:Bash（失敗時） | 失敗指令摘要寫入 `learnings.md` |
+| `post-bash-learning.ps1.tmpl` | PostToolUse:Bash（失敗時） | 失敗指令摘要寫入 `learnings/inbox.md` 待整理 |
 | `user-prompt-loader.ps1.tmpl` | UserPromptSubmit | 注入 `status.md` 摘要到上下文 |
 
 ## 啟用流程（使用者手動）

@@ -40,7 +40,7 @@ foreach ($pattern in $forbidden) {
 }
 
 # 阻擋根目錄散落的 .md（除了允許的）
-$allowedRootMd = @('README.md', 'CLAUDE.md', 'plan.md', 'status.md', 'learnings.md', 'CHANGELOG.md', 'LICENSE.md', 'CONTRIBUTING.md', 'learnings.archive.md')
+$allowedRootMd = @('README.md', 'CLAUDE.md', 'plan.md', 'status.md', 'CHANGELOG.md', 'LICENSE.md', 'CONTRIBUTING.md')
 $leaf = Split-Path -Leaf $filePath
 $parent = Split-Path -Parent $filePath
 $projectDir = $env:CLAUDE_PROJECT_DIR

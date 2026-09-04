@@ -21,7 +21,7 @@
 | 詳細架構 | `docs/architecture.md` |
 | 安裝步驟 | `docs/install.md` |
 | 使用方式 | `docs/usage.md` |
-| 過去錯誤 | `learnings.md` |
+| 過去錯誤 | `learnings/INDEX.md` |
 | 任務計畫 | `plan.md` |
 | 當前進度 | `status.md` |
 | **工項追蹤** | **`input/backlog.md`** |
@@ -31,9 +31,14 @@
 ## Session 啟動 SOP
 1. 讀 `status.md` → 找到當前工項 ID
 2. 查 `input/backlog.md` → 確認該工項依賴是否完成、狀態是否可開工
-3. 讀 `learnings.md` 索引避免重複錯誤
+3. 讀 `learnings/INDEX.md`，命中相關情境再展開該張卡
 4. 讀 `plan.md` 確認當前 Phase 範圍
 5. 開工
+
+## 經驗教訓卡
+- 教訓寫成獨立卡片放 `learnings/cards/`，**不要合併成單一檔案**（多人推 git 會衝突）
+- 新增用 `scripts/new-learning-card.ps1 -Title "標題"`，檔名自動帶時間與作者
+- `learnings/INDEX.md` 由腳本產生，勿手改；衝突時重跑腳本覆蓋
 
 ## 重要規則
 - **工項狀態只改 `input/backlog.md`**，不改 phase 細節檔（phase 檔只存規格說明）

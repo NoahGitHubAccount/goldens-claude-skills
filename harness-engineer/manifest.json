@@ -1,28 +1,87 @@
 {
   "skill": "harness-engineer",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "spec_version": 1,
   "_comment": "kind 分類用於未來 upgrade-harness.ps1：seed=init 寫入專案、升級不覆蓋；optional-core=範本、使用者自取、升級可覆蓋；tool=scripts 本身、不進專案。",
   "files": {
-    "templates/CLAUDE.md.tmpl":          { "kind": "seed", "destination": "CLAUDE.md" },
-    "templates/plan.md.tmpl":            { "kind": "seed", "destination": "plan.md" },
-    "templates/status.md.tmpl":          { "kind": "seed", "destination": "status.md" },
-    "templates/learnings.md.tmpl":       { "kind": "seed", "destination": "learnings.md" },
-    "templates/README.md.tmpl":          { "kind": "seed", "destination": "README.md" },
-    "templates/docs/README.md.tmpl":     { "kind": "seed", "destination": "docs/README.md" },
-    "templates/notes/README.md.tmpl":    { "kind": "seed", "destination": "notes/README.md" },
-    "templates/backlog.md.tmpl":         { "kind": "seed", "destination": "input/backlog.md" },
-
-    "assets/hooks/pre-write-guard.ps1.tmpl":      { "kind": "optional-core", "destination": ".claude/hooks/pre-write-guard.ps1" },
-    "assets/hooks/post-edit-format.ps1.tmpl":     { "kind": "optional-core", "destination": ".claude/hooks/post-edit-format.ps1" },
-    "assets/hooks/stop-status-snapshot.ps1.tmpl": { "kind": "optional-core", "destination": ".claude/hooks/stop-status-snapshot.ps1" },
-    "assets/hooks/post-bash-learning.ps1.tmpl":   { "kind": "optional-core", "destination": ".claude/hooks/post-bash-learning.ps1" },
-    "assets/hooks/user-prompt-loader.ps1.tmpl":   { "kind": "optional-core", "destination": ".claude/hooks/user-prompt-loader.ps1" },
-    "assets/settings.local.json.tmpl":            { "kind": "optional-core", "destination": ".claude/settings.local.json" },
-    "assets/eval.json.tmpl":                      { "kind": "optional-core", "destination": "eval.json" },
-
-    "scripts/init-scaffold.ps1":   { "kind": "tool" },
-    "scripts/check-harness.ps1":   { "kind": "tool" },
-    "scripts/render-template.ps1": { "kind": "tool" }
+    "templates/CLAUDE.md.tmpl": {
+      "kind": "seed",
+      "destination": "CLAUDE.md"
+    },
+    "templates/plan.md.tmpl": {
+      "kind": "seed",
+      "destination": "plan.md"
+    },
+    "templates/status.md.tmpl": {
+      "kind": "seed",
+      "destination": "status.md"
+    },
+    "templates/learnings/README.md.tmpl": {
+      "kind": "seed",
+      "destination": "learnings/README.md"
+    },
+    "templates/learnings/card.md.tmpl": {
+      "kind": "tool",
+      "_note": "由 new-learning-card.ps1 使用，不直接複製到專案"
+    },
+    "templates/README.md.tmpl": {
+      "kind": "seed",
+      "destination": "README.md"
+    },
+    "templates/docs/README.md.tmpl": {
+      "kind": "seed",
+      "destination": "docs/README.md"
+    },
+    "templates/notes/README.md.tmpl": {
+      "kind": "seed",
+      "destination": "notes/README.md"
+    },
+    "templates/backlog.md.tmpl": {
+      "kind": "seed",
+      "destination": "input/backlog.md"
+    },
+    "assets/hooks/pre-write-guard.ps1.tmpl": {
+      "kind": "optional-core",
+      "destination": ".claude/hooks/pre-write-guard.ps1"
+    },
+    "assets/hooks/post-edit-format.ps1.tmpl": {
+      "kind": "optional-core",
+      "destination": ".claude/hooks/post-edit-format.ps1"
+    },
+    "assets/hooks/stop-status-snapshot.ps1.tmpl": {
+      "kind": "optional-core",
+      "destination": ".claude/hooks/stop-status-snapshot.ps1"
+    },
+    "assets/hooks/post-bash-learning.ps1.tmpl": {
+      "kind": "optional-core",
+      "destination": ".claude/hooks/post-bash-learning.ps1"
+    },
+    "assets/hooks/user-prompt-loader.ps1.tmpl": {
+      "kind": "optional-core",
+      "destination": ".claude/hooks/user-prompt-loader.ps1"
+    },
+    "assets/settings.local.json.tmpl": {
+      "kind": "optional-core",
+      "destination": ".claude/settings.local.json"
+    },
+    "assets/eval.json.tmpl": {
+      "kind": "optional-core",
+      "destination": "eval.json"
+    },
+    "scripts/init-scaffold.ps1": {
+      "kind": "tool"
+    },
+    "scripts/check-harness.ps1": {
+      "kind": "tool"
+    },
+    "scripts/render-template.ps1": {
+      "kind": "tool"
+    },
+    "scripts/new-learning-card.ps1": {
+      "kind": "tool"
+    },
+    "scripts/build-learning-index.ps1": {
+      "kind": "tool"
+    }
   }
 }

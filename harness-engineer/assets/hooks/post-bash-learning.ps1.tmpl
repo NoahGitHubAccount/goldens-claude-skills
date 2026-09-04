@@ -1,14 +1,21 @@
 ﻿<#
 .SYNOPSIS
-  PostToolUse hook — Bash 失敗時把指令與 stderr 摘要寫入 learnings.md 待整理區。
+  PostToolUse hook — Bash 失敗時把指令與 stderr 摘要寫入 learnings/inbox.md。
 
 .DESCRIPTION
   Hook 從 stdin 收到 JSON，含 tool_input.command 與 tool_response.exit_code/stderr。
   僅在 exit_code != 0 時觸發，避免噪音。
 
+  **寫入收件匣而不是直接建卡**：自動蒐集的失敗訊息多數只是一時的輸入錯誤，
+  直接建成卡片會讓 learnings/cards/ 充滿雜訊。收件匣是給人過濾用的暫存區，
+  確認某則值得留存後，再用 new-learning-card.ps1 建成正式卡片。
+
 .NOTES
   複製到 <project>/.claude/hooks/post-bash-learning.ps1。
-  寫入位置：<project>/learnings.md 的「## 待整理」區塊下方。
+  寫入位置：<project>/learnings/inbox.md
+
+  建議把 learnings/inbox.md 加入 .gitignore —— 那是個人的待整理暫存，
+  不需要進版控，也就不會與同事衝突。
 #>
 
 $input | Out-String | Set-Variable -Name raw
@@ -24,8 +31,10 @@ if (-not $exitCode -or $exitCode -eq 0) { exit 0 }
 $projectDir = $env:CLAUDE_PROJECT_DIR
 if (-not $projectDir) { exit 0 }
 
-$learningsFile = Join-Path $projectDir 'learnings.md'
-if (-not (Test-Path -LiteralPath $learningsFile)) { exit 0 }
+$learningsDir = Join-Path $projectDir 'learnings'
+if (-not (Test-Path -LiteralPath $learningsDir)) { exit 0 }
+
+$inboxFile = Join-Path $learningsDir 'inbox.md'
 
 $cmd = $payload.tool_input.command
 if (-not $cmd) { exit 0 }
@@ -35,23 +44,34 @@ $stderr = $payload.tool_response.stderr
 if (-not $stderr) { $stderr = '(無 stderr)' }
 $stderrShort = if ($stderr.Length -gt 300) { $stderr.Substring(0, 300) + '...' } else { $stderr }
 
-$today = Get-Date -Format 'yyyy-MM-dd'
+$stamp = Get-Date -Format 'yyyy-MM-dd HH:mm'
+
+# 收件匣不存在就先寫入說明，讓看到檔案的人知道該怎麼處理
+if (-not (Test-Path -LiteralPath $inboxFile)) {
+    $header = @"
+# 待整理（Hook 自動寫入）
+
+> 這裡是 Bash 失敗時自動蒐集的原始訊息，**不是正式的經驗卡**。
+>
+> 處理方式：
+> 1. 看過一遍，多數只是一時的輸入錯誤，直接刪掉即可
+> 2. 確實值得留存的，執行 new-learning-card.ps1 建成正式卡片
+> 3. 建卡後把這裡對應的段落刪除
+>
+> 本檔建議加入 .gitignore：它是個人暫存，不需要進版控。
+
+"@
+    [System.IO.File]::WriteAllText($inboxFile, $header, (New-Object System.Text.UTF8Encoding $false))
+}
+
 $entry = @"
 
-- [$today] Bash 失敗（exit $exitCode）
-  - 指令：``$cmdShort``
-  - stderr：$stderrShort
+## [$stamp] Bash 失敗（exit $exitCode）
+
+- 指令：``$cmdShort``
+- stderr：$stderrShort
 "@
 
-# 在「## 待整理」標題後追加
-$content = Get-Content -LiteralPath $learningsFile -Raw -Encoding UTF8
-$marker = '## 待整理（Hook 自動寫入區）'
-if ($content -match [regex]::Escape($marker)) {
-    $content = $content -replace [regex]::Escape($marker), "$marker$entry"
-    Set-Content -LiteralPath $learningsFile -Value $content -Encoding UTF8 -NoNewline
-} else {
-    # 找不到 marker 就追加到檔案末尾
-    Add-Content -LiteralPath $learningsFile -Value $entry -Encoding UTF8
-}
+Add-Content -LiteralPath $inboxFile -Value $entry -Encoding UTF8
 
 exit 0
